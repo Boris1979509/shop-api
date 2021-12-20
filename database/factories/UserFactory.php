@@ -22,7 +22,7 @@ class UserFactory extends Factory
             'email'          => $this->faker->unique()->safeEmail(),
             'phone'          => random_int(9000000000, 9999999999),
             'status'         => $active ? User::STATUS_ACTIVE : User::STATUS_PENDING,
-            'password'       => 'password', // Hashed in User class set()
+            'password'       => '123456', // Hashed in User class set()
             'full_address'   => [
                 'street'   => $this->faker->streetAddress(),
                 'city'     => $this->faker->city(),

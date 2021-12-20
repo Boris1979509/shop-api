@@ -2,30 +2,43 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Validation\ValidationException;
+
+//use Laravel\Sanctum\HasApiTokens;
 
 /**
  * Class User
  * @package App\Models
+ * @property int $id
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property object $full_address
+ * @property string $phone
+ * @property string $password
+ * @property string $phone_verify_token
+ * @property Carbon $phone_verify_token_expire
+ * @property Carbon $phone_verified_at
+ * @property string $status
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     // statuses
     public const STATUS_ACTIVE = 'active';
     public const STATUS_PENDING = 'pending';
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
+     * @var array $fillable
      */
     protected array $fillable = [
         'first_name',
@@ -33,29 +46,30 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
+        'phone_verify_token_expire',
+        'phone_verify_token',
         'status',
         'full_address',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
+     * @var array $hidden
      */
     protected array $hidden = [
         'password',
         'remember_token',
+        'phone_verify_token',
+        'phone_verify_token_expire',
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * @var array $casts
      */
     protected array $casts = [
-        'email_verified_at' => 'datetime',
-        'full_address'      => 'object',
-        'phone'             => 'integer',
+        'email_verified_at'         => 'datetime',
+        'phone_verify_token_expire' => 'datetime',
+        'full_address'              => 'object',
+        'phone'                     => 'integer',
     ];
 
     /**
@@ -80,5 +94,68 @@ class User extends Authenticatable
     public function setLastNameAttribute($last_name): void
     {
         $this->attributes['last_name'] = Str::ucfirst($last_name);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPending(): bool
+    {
+        return $this->status === self::STATUS_PENDING;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * Register by phone
+     * @param string $phone
+     * @param string $phone_verify_token
+     * @return mixed
+     */
+    public static function registerByPhone(string $phone, string $phone_verify_token)
+    {
+        return static::updateOrCreate(
+            [
+                'phone' => $phone,
+            ],
+            [
+                'status'                    => self::STATUS_PENDING,
+                'phone_verify_token'        => $phone_verify_token,
+                'phone_verify_token_expire' => (Carbon::now())->copy()->addMinute(),
+            ]
+        );
+    }
+
+    /**
+     * @param string $token
+     * @param Carbon $now
+     * @return JsonResponse|void
+     * @throws \Throwable
+     */
+    public function verifyPhone(string $token, Carbon $now)
+    {
+        if ($token !== $this->phone_verify_token) {
+            throw ValidationException::withMessages([
+                'phone_verify_token' => trans('Incorrect verify token.'),
+            ]);
+        }
+        if ($this->phone_verify_token_expire->lt($now)) {
+            throw ValidationException::withMessages([
+                'phone_verify_token' => trans('Token is expired.'),
+            ]);
+        }
+        $this->password = $this->phone_verify_token;
+        $this->phone_verify_token = $this->phone_verify_token_expire = null;
+
+        $this->status = self::STATUS_ACTIVE;
+        $this->phone_verified_at = $now;
+
+        $this->saveOrFail();
     }
 }
