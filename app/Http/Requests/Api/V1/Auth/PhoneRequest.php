@@ -30,9 +30,6 @@ class PhoneRequest extends FormRequest
                 'required',
                 'digits:10',
             ],
-            'password' => [
-                'required',
-            ],
         ];
     }
 }

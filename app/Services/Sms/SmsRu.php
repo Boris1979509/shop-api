@@ -11,9 +11,9 @@ use GuzzleHttp\Exception\GuzzleException;
  */
 class SmsRu implements SmsSender
 {
-    private string $appId;
-    private string $url;
-    private Client $client;
+    private $appId;
+    private $url;
+    private $client;
 
     /**
      * SmsRu constructor.

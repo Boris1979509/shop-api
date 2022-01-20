@@ -2,10 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\Sms\SmsRu;
-use App\UseCases\Api\V1\Auth\AuthAdapterService;
-use App\UseCases\Api\V1\Auth\AuthByEmailService;
-use App\UseCases\Api\V1\Auth\AuthByPhoneService;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,16 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(AuthAdapterService::class, static function ($app) {
-            switch ($app->make('config')->get('services.auth_adapter')) {
-                case 'phone':
-                    return new AuthByPhoneService(new SmsRu());
-                case 'email':
-                    return new AuthByEmailService();
-                default:
-                    throw new \RuntimeException('Adapter class not found.');
-            }
-        });
+        //
     }
 
     /**
@@ -34,8 +22,8 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        //
+        //JsonResource::withoutWrapping();
     }
 }

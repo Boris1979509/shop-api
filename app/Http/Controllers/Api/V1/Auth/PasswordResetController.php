@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Class RegisterController
+ * Class PasswordResetController
  * @package App\Http\Controllers\Api\V1\Auth
  */
-class RegisterController extends BaseController
+class PasswordResetController extends BaseController
 {
     /**
      * @var AuthAdapterService $authAdapterService
@@ -19,7 +19,7 @@ class RegisterController extends BaseController
     private $authAdapterService;
 
     /**
-     * RegisterController constructor.
+     * PasswordResetController constructor.
      * @param AuthAdapterService $authAdapterService
      */
     public function __construct(AuthAdapterService $authAdapterService)
@@ -27,29 +27,17 @@ class RegisterController extends BaseController
         $this->authAdapterService = $authAdapterService;
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse|void
-     */
-    public function register(Request $request)
-    {
-        try {
-            return $this->authAdapterService->register($request);
-        } catch (\RuntimeException $error) {
-            Log::error($error);
-        }
-    }
 
     /**
      * @param Request $request
      * @return JsonResponse|void
      */
-    public function verify(Request $request)
+    public function reset(Request $request)
     {
         try {
-            $this->authAdapterService->verify($request);
+            return $this->authAdapterService->register($request);
         } catch (\RuntimeException $error) {
-            return response()->json(['error' => $error->getMessage()]);
+            Log::error($error);
         }
     }
 }

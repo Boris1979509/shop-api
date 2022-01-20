@@ -13,8 +13,14 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
-    'password' => 'The provided password is incorrect.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'failed'                       => 'These credentials do not match our records.',
+    'password'                     => 'The provided password is incorrect.',
+    'throttle'                     => 'Too many login attempts. Please try again in :seconds seconds.',
+    'userIsAlreadyVerified'        => 'User is already verified.',
+    'incorrectVerifyToken'         => 'incorrect verify token.',
+    'tokenIsExpired'               => 'Token is expired.',
+    'invalidUsernameOrPassword'    => 'Invalid username or password.',
+    'youHaveSuccessfullyLoggedIn'  => 'You have successfully logged in.',
+    'youHaveSuccessfullyLoggedOut' => 'You have successfully logged out.',
 
 ];

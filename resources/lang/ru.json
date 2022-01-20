@@ -1,0 +1,20 @@
+{
+    "The category has been successfully created": "Категория успешно создана.",
+    "The category has been successfully updated": "Категория успешно обновлена.",
+    "The category has been successfully deleted": "Категория \":Name\" успешно удалена.",
+    "The user has been successfully created": "Пользователь успешно создан.",
+    "The user has been successfully updated": "Пользователь успешно обновлен.",
+    "The user has been successfully deleted": "Пользователь с ID=\":id\" успешно удален.",
+    "The user is active": "Пользователь \":phone\" активен.",
+    "The product was successfully created": "Продукт успешно создан.",
+    "The product was successfully updated": "Продукт успешно обновлён.",
+    "Your message has been sent successfully": "Ваше сообщение успешно отправлено.",
+    "The image was successfully deleted": "Картинка успешно удалена.",
+    "auth": {
+        "userIsAlreadyVerified": "Пользователь уже подтвержден.",
+        "incorrectVerifyToken": "Неверный код подтверждения.",
+        "tokenIsExpired": "Срок действия токена истек.",
+        "invalidUsernameOrPassword": "Неверный логин или пароль.",
+        "youHaveSuccessfullyLoggedIn": "Вы успешно вошли в систему."
+    }
+}

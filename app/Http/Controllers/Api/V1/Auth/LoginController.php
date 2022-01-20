@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Requests\Api\V1\Auth\LoginTypeRequest;
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +16,6 @@ use Illuminate\Validation\ValidationException;
  */
 class LoginController extends BaseController
 {
-
     /**
      * Login
      * @param LoginTypeRequest $request
@@ -31,16 +29,15 @@ class LoginController extends BaseController
 
         if (!Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
-                'password' => trans('Invalid username or password.'),
+                'password' => trans('auth.invalidUsernameOrPassword'),
             ]);
         }
-        //$request->session()->regenerate();
-        $user = Auth::user();
-        $response = [
-            'user'    => new userResource($user),
-            'message' => trans('You have successfully logged in.'),
-        ];
-        return response()->json($response, 200);
+        $request->session()->regenerate();
+
+        return response()->json(
+            ['message' => trans('auth.youHaveSuccessfullyLoggedIn')],
+            200
+        );
     }
 
     /**
@@ -54,7 +51,7 @@ class LoginController extends BaseController
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
-            return response()->json(['message' => trans('You have successfully logged out.')]);
+            return response()->json(['message' => trans('auth.youHaveSuccessfullyLoggedOut')]);
         } catch (\Exception $error) {
             return response()->json($error->getMessage());
         }
