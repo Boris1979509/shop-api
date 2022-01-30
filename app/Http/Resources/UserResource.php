@@ -31,7 +31,9 @@ class UserResource extends JsonResource
         $user = Auth::user();
         return [
             'phone'      => phone_to_string($this->phone),
-            'role'       => $this->when($user->isAdmin(), Role::ROLE_ADMIN),
+            'roles'       => $this->roles
+            /** $this->when($user->isAdmin(), Role::ROLE_ADMIN)*/
+            ,
             'created_at' => $this->created_at->format('d.m.Y'),
         ];
     }
