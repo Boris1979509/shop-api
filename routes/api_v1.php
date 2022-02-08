@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\Auth\PasswordResetController;
@@ -27,6 +28,8 @@ Route::group([
             'users' => UserController::class,
         ]
     );
+    Route::get('dashboard', [DashboardController::class, 'index']);
+    Route::get('sidebar', [DashboardController::class, 'sidebar']);
 });
 /** Auth User */
 Route::middleware('auth:sanctum')
