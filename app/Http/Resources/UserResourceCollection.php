@@ -14,11 +14,16 @@ use JsonSerializable;
 class UserResourceCollection extends ResourceCollection
 {
     /**
+     * @var string $wrap
+     */
+    public static $wrap = 'users';
+
+    /**
      * @param Request $request
      * @return array|Arrayable|JsonSerializable
      */
     public function toArray($request)
     {
-        return [];
+        return $this->collection;
     }
 }

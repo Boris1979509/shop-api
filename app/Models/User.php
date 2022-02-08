@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Notifications\Notifiable;
@@ -13,6 +14,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+
 //use Laravel\Sanctum\HasApiTokens;
 
 /**
@@ -33,7 +35,7 @@ use Illuminate\Validation\ValidationException;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     // statuses
     public const STATUS_ACTIVE = 'active';
@@ -135,6 +137,15 @@ class User extends Authenticatable
     }
 
     /**
+     * @param array $data
+     * @return User
+     */
+    public static function new(array $data): self
+    {
+        return static::create($data);
+    }
+
+    /**
      * @param string $token
      * @param Carbon $now
      * @return JsonResponse|void
@@ -189,5 +200,15 @@ class User extends Authenticatable
         /** @var $roles Collection */
         $roles = $this->roles;
         return $roles->contains('name', Role::ROLE_ADMIN);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUser(): bool
+    {
+        /** @var $roles Collection */
+        $roles = $this->roles;
+        return $roles->contains('name', Role::ROLE_USER);
     }
 }
